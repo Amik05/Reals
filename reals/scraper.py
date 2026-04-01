@@ -58,25 +58,22 @@ def scrape_feed(count=10):
                 storage_state="session.json",
                 viewport=viewport
             )
+            page = context.new_page()
+            page.goto("https://www.instagram.com/reels/")
+            print("Continuing saved session.")
         else:
             context = browser.new_context(viewport=viewport)
+            page = context.new_page()
+            page.goto("https://www.instagram.com/reels/")
+            print("Log in to Instagram if prompted, then press Enter here...")
+            input()
 
-        page = context.new_page()
-        page.goto("https://www.instagram.com/reels/")
-        
-        # Give user time to log in if needed
-        print("Log in to Instagram if prompted, then press Enter here...")
-        input()
-
-        # Save session for next time
         context.storage_state(path="session.json")
 
-        # Scroll and screenshot
         print(f"Capturing {count} posts...")
         captured = 0
 
         while captured < count:
-            # Screenshot the current viewport
             path = f"screenshots/post_{captured}.png"
             path = f"screenshots/comments_{captured}.png"
             page.screenshot(path=path, full_page=False)
@@ -84,8 +81,6 @@ def scrape_feed(count=10):
             comments_path = get_comments(page, captured)
             screenshots.append((path, comments_path))   
             captured += 1
-
-            # Scroll down
             page.keyboard.press("ArrowDown")
             time.sleep(1.5)  # wait for content to load
 
