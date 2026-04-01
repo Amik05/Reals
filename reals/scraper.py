@@ -6,24 +6,30 @@ def crop_comments(path):
     img = Image.open(path)
     width, height = img.size
     
-    # Comment drawer sits in the bottom portion of the screen
-    top = int(height * 0.3)      # skip the reel above
-    bottom = int(height * 0.95)  # skip bottom nav
+   # Crop out top nav and bottom UI chrome
+    left = int(width * 0.45)      # skip left 2%
+    right = int(width * 0.77) 
+    top = int(height * 0.09)      # skip top 5% (nav bar)
+    bottom = int(height * 0.7)   # skip bottom 12% (like/comment buttons)
     
-    cropped = img.crop((0, top, width, bottom))
+    cropped = img.crop((left, top, right, bottom))
     cropped.save(path)
 
-def get_comments(page, index):
+def get_comments(page, captured):
     try:
-        # Click comment icon
-        page.locator("[aria-label='Comment']").first.click()
+        # Click center first to focus current reel
+        page.mouse.click(215, 466)
+        time.sleep(1)
+
+        # Click comment button by position (right side, ~60% down)
+        #731.25, y:670
+        page.mouse.click(735, 680)
         time.sleep(2)
 
-        # Screenshot the comment drawer
-        path = f"screenshots/comments_{index}.png"
+        path = f"screenshots/comments_{captured}.png"
         page.screenshot(path=path, full_page=False)
+        crop_comments(path)
 
-        # Close drawer
         page.keyboard.press("Escape")
         time.sleep(1)
 
@@ -45,6 +51,7 @@ def crop_reel(path):
     cropped.save(path)
 
 def scrape_feed(count=10):
+    
     os.makedirs("screenshots", exist_ok=True)
     screenshots = []
 
@@ -60,6 +67,7 @@ def scrape_feed(count=10):
             )
             page = context.new_page()
             page.goto("https://www.instagram.com/reels/")
+            # page.pause()
             print("Continuing saved session.")
         else:
             context = browser.new_context(viewport=viewport)
@@ -72,17 +80,15 @@ def scrape_feed(count=10):
 
         print(f"Capturing {count} posts...")
         captured = 0
-
         while captured < count:
             path = f"screenshots/post_{captured}.png"
-            path = f"screenshots/comments_{captured}.png"
             page.screenshot(path=path, full_page=False)
             crop_reel(path) 
             comments_path = get_comments(page, captured)
             screenshots.append((path, comments_path))   
             captured += 1
             page.keyboard.press("ArrowDown")
-            time.sleep(1.5)  # wait for content to load
+            time.sleep(2)  # wait for content to load
 
         browser.close()
 

@@ -20,23 +20,18 @@ def build_pdf(screenshots, post_data, output="reals.pdf"):
         pdf.cell(0, 8, f"@{data.get('username', 'unknown')}  [{data.get('type', 'post')}]", ln=True)
         pdf.ln(2)
 
-        # Image
+        # Image (604x830 → scale to fit page width)
         try:
-            img = Image.open(path)
-            img_w, img_h = img.size
-            aspect = img_h / img_w
-            display_w = 180
-            display_h = min(display_w * aspect, 160)
-            pdf.image(path, x=15, w=display_w, h=display_h)
-            pdf.ln(display_h + 5)
+            pdf.image(path, x=15, w=90, h=123)  # scaled down proportionally
+            pdf.ln(5)
         except:
             pdf.ln(5)
 
-        # Comments
-        # Comments screenshot
+        # Comments screenshot (298x610 → scale proportionally)
         if comments_path:
-            pdf.image(comments_path, x=15, w=180)
+            pdf.image(comments_path, x=15, w=45, h=92)
             pdf.ln(5)
+
 
         # Summary
         pdf.set_font("Helvetica", "I", 11)
