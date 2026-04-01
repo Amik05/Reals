@@ -1,16 +1,31 @@
+import sys
 from scraper import scrape_feed
 from ai_processor import process_screenshot
 from pdf_builder import build_pdf
 
 COUNT = 8  # keep low for hackathon demo speed
 
-print("🚀 Starting Reals...")
+DRY_RUN = "--dry-run" in sys.argv   
+
+DUMMY_DATA = {
+    "username": "natgeo",
+    "caption": "japan is turning footsteps into energy",
+    "type": "photo",
+    "summary": "Stunning shot of shibuya crossing"
+}
+
+print("Starting Reals...")
 screenshots = scrape_feed(count=COUNT)
 
-print("🤖 Processing with AI...")
-post_data = [process_screenshot(s) for s in screenshots]
+if DRY_RUN:
+    print("Dry run - skipping AI calss")
+    post_data = [DUMMY_DATA] * len(screenshots)
+else:
+    print("Processing with AI...")
+    post_data = [process_screenshot(s) for s in screenshots]
 
-print("📄 Building PDF...")
+
+print("Building PDF...")
 build_pdf(screenshots, post_data)
 
-print("🎉 Done! Open reals.pdf and print it.")
+print("Done! Open reals.pdf and print it.")
