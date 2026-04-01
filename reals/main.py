@@ -3,7 +3,7 @@ from scraper import scrape_feed
 from ai_processor import process_screenshot
 from pdf_builder import build_pdf
 
-COUNT = 8  # keep low for hackathon demo speed
+COUNT = 2  # keep low for hackathon demo speed
 
 DRY_RUN = "--dry-run" in sys.argv   
 

@@ -5,7 +5,7 @@ def build_pdf(screenshots, post_data, output="reals.pdf"):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    for i, (path, data) in enumerate(zip(screenshots, post_data)):
+    for i, ((path, comments_path), data) in enumerate(zip(screenshots, post_data)):
         pdf.add_page()
 
         # Header
@@ -30,6 +30,12 @@ def build_pdf(screenshots, post_data, output="reals.pdf"):
             pdf.image(path, x=15, w=display_w, h=display_h)
             pdf.ln(display_h + 5)
         except:
+            pdf.ln(5)
+
+        # Comments
+        # Comments screenshot
+        if comments_path:
+            pdf.image(comments_path, x=15, w=180)
             pdf.ln(5)
 
         # Summary
