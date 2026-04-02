@@ -1,90 +1,73 @@
-# 📰 Reals
+# Reals
 
-![Reals](./book.jpg)
+Print your Instagram Reels feed. Put down your phone. Read instead.
 
-> Print your Instagram Reels feed. Put down your phone. Read instead.
-
-Reals is a local Python tool that scrolls your Instagram Reels feed, screenshots each post, uses AI to summarize video content, and generates a printable PDF — like a personal zine of your feed.
-
-The idea: instead of doomscrolling before bed, you print your Reals and read them offline.
+Instead of doomscrolling before bed, Reals captures your feed, runs it through AI, and generates a printable PDF zine you can read offline.
 
 ---
 
 ## How it works
 
-1. A Playwright browser opens Instagram Reels
-2. It scrolls through your feed, screenshotting each reel
-3. Vision AI reads each screenshot — extracting the username, caption, and writing a one-line summary of the video content
-4. Everything gets laid out into a clean, printable PDF
+A Playwright browser scrolls through your Instagram Reels, screenshotting each one. A vision AI model extracts the username, caption, and writes a one-line summary of the video content. Everything gets laid out into a two-up printable PDF.
 
 ---
 
 ## Setup
 
-**Requirements**
-
-- Python 3.9+
-- An AI API key
-
-**Install**
+Requirements: Python 3.9+, an API key for Claude or Gemini.
 
 ```bash
 git clone https://github.com/yourusername/reals
 cd reals
-pip install playwright anthropic fpdf2 pillow python-dotenv PyQt5
+pip install playwright anthropic google-generativeai fpdf2 pillow python-dotenv PyQt5
 playwright install chromium
 ```
 
-**Set your API key**
-
-Create a `.env` file in the project root:
-
-```bash
-cp .env.example .env
-```
-
-Then open `.env` and add your key:
+Copy `.env.example` to `.env` and fill in your key:
 
 ```
-AI_API_KEY=your_key_here
+# Use Claude (Anthropic)
+ANTHROPIC_API_KEY=your_key_here
+AI_PROVIDER=claude
+
+# Or use Gemini (Google)
+GEMINI_API_KEY=your_key_here
+AI_PROVIDER=gemini
 ```
 
 ---
 
 ## Usage
 
-**Desktop app (recommended)**
+**Desktop app**
 
 ```bash
 python app.py
 ```
 
-A window will open with a slider to choose how many reels to capture, a dry run toggle, and a live log. Click **Print my Reals →** and it handles the rest.
-
 **CLI**
 
 ```bash
-# Full run — opens browser, screenshots feed, generates PDF
-python main.py
-
-# Dry run — skips AI calls, uses dummy data (free, good for testing layout)
-python main.py --dry-run
-
-# Custom count
-python main.py --count 12
+python main.py                  # standard run
+python main.py --count 12       # capture 12 reels
+python main.py --dry-run        # skip AI calls, free, good for testing layout
 ```
 
-On first run, a browser window will open. Log into Instagram normally, then press **Enter** in the terminal. Your session is saved locally so you won't need to log in again.
+On first run a browser window opens — log into Instagram, press Enter in the terminal. Your session is saved so you won't need to log in again. `reals.pdf` will appear in the project folder when done.
 
-Your `reals.pdf` will appear in the project folder. Print it out.
+---
+
+## Cost
+
+Roughly $0.08 per run (8 reels) with Claude Sonnet. Gemini 2.0 Flash is cheaper still. $5 in credits gets you plenty of runs.
 
 ---
 
 ## Privacy
 
-Everything runs locally on your machine. Your Instagram session, screenshots, and feed data never leave your computer. The only external call is to the AI API to process screenshots.
+Everything runs locally. Your Instagram session and screenshots never leave your machine. The only external calls are to the AI API you configure.
 
-Make sure `session.json` and `screenshots/` are in your `.gitignore` — they're already excluded if you clone this repo.
+Never commit `.env` or `session.json` — both are in `.gitignore` by default.
 
 ---
 
@@ -93,33 +76,30 @@ Make sure `session.json` and `screenshots/` are in your `.gitignore` — they're
 ```
 reals/
 ├── app.py            # desktop GUI (PyQt5)
-├── main.py           # CLI entrypoint, --dry-run --count flags
+├── main.py           # CLI entrypoint
 ├── scraper.py        # Playwright browser automation
-├── ai_processor.py   # Vision API calls
+├── ai_processor.py   # Claude / Gemini vision
 ├── pdf_builder.py    # PDF layout and export
-├── .env.example      # copy to .env and add your API key
-├── requirements.txt
-└── .gitignore        # includes .env, session.json, screenshots/
+├── .env.example
+└── .gitignore
 ```
 
 ---
 
 ## Limitations
 
-- Video content is captured as a still frame + AI summary (you can't print a video)
-- Instagram's UI changes occasionally — selectors may need updating
-- Intended for personal use. Running this at scale would violate Instagram's ToS
+- Reels are captured as a still frame + AI summary — you can't print a video
+- Instagram's UI changes occasionally and may need selector updates
+- Intended for personal use — running at scale violates Instagram's ToS
 
 ---
 
 ## Why
 
-Average person spends 2+ hours a day on social media, much of it passively scrolling. Reals doesn't try to stop you from consuming your feed — it just moves it off your phone and onto paper.
+The average person spends 2+ hours a day scrolling. Reals doesn't stop you from consuming your feed — it just moves it off your phone and onto paper.
 
 Built at a hackathon in 4 hours.
 
 ---
 
-## License
-
-MIT
+MIT License
