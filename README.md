@@ -4,7 +4,7 @@
 
 > Print your Instagram Reels feed. Put down your phone. Read instead.
 
-Reals is a local Python tool that scrolls your Instagram Reels feed, screenshots each post, uses Claude AI to summarize video content, and generates a printable PDF — like a personal zine of your feed.
+Reals is a local Python tool that scrolls your Instagram Reels feed, screenshots each post, uses AI to summarize video content, and generates a printable PDF — like a personal zine of your feed.
 
 The idea: instead of doomscrolling before bed, you print your Reals and read them offline.
 
@@ -14,7 +14,7 @@ The idea: instead of doomscrolling before bed, you print your Reals and read the
 
 1. A Playwright browser opens Instagram Reels
 2. It scrolls through your feed, screenshotting each reel
-3. Claude vision AI reads each screenshot — extracting the username, caption, and writing a one-line summary of the video content
+3. Vision AI reads each screenshot — extracting the username, caption, and writing a one-line summary of the video content
 4. Everything gets laid out into a clean, printable PDF
 
 ---
@@ -24,7 +24,7 @@ The idea: instead of doomscrolling before bed, you print your Reals and read the
 **Requirements**
 
 - Python 3.9+
-- An [Anthropic API key](https://console.anthropic.com/)
+- An AI API key
 
 **Install**
 
@@ -46,7 +46,7 @@ cp .env.example .env
 Then open `.env` and add your key:
 
 ```
-ANTHROPIC_API_KEY=your_key_here
+AI_API_KEY=your_key_here
 ```
 
 ---
@@ -80,15 +80,9 @@ Your `reals.pdf` will appear in the project folder. Print it out.
 
 ---
 
-## Cost
-
-Each run (8 posts) costs roughly **$0.08** in Claude API credits. $5 gets you ~60 runs.
-
----
-
 ## Privacy
 
-Everything runs locally on your machine. Your Instagram session, screenshots, and feed data never leave your computer. The only external call is to the Anthropic API to process screenshots.
+Everything runs locally on your machine. Your Instagram session, screenshots, and feed data never leave your computer. The only external call is to the AI API to process screenshots.
 
 Make sure `session.json` and `screenshots/` are in your `.gitignore` — they're already excluded if you clone this repo.
 
@@ -101,7 +95,7 @@ reals/
 ├── app.py            # desktop GUI (PyQt5)
 ├── main.py           # CLI entrypoint, --dry-run --count flags
 ├── scraper.py        # Playwright browser automation
-├── ai_processor.py   # Claude vision API calls
+├── ai_processor.py   # Vision API calls
 ├── pdf_builder.py    # PDF layout and export
 ├── .env.example      # copy to .env and add your API key
 ├── requirements.txt
