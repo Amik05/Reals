@@ -1,4 +1,7 @@
 import anthropic, base64
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 client = anthropic.Anthropic()
 
