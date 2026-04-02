@@ -29,19 +29,37 @@ The idea: instead of doomscrolling before bed, you print your Reals and read the
 ```bash
 git clone https://github.com/yourusername/reals
 cd reals
-pip install playwright anthropic fpdf2 pillow
+pip install playwright anthropic fpdf2 pillow python-dotenv PyQt5
 playwright install chromium
 ```
 
 **Set your API key**
 
+Create a `.env` file in the project root:
+
 ```bash
-export ANTHROPIC_API_KEY=your_key_here
+cp .env.example .env
+```
+
+Then open `.env` and add your key:
+
+```
+ANTHROPIC_API_KEY=your_key_here
 ```
 
 ---
 
 ## Usage
+
+**Desktop app (recommended)**
+
+```bash
+python app.py
+```
+
+A window will open with a slider to choose how many reels to capture, a dry run toggle, and a live log. Click **Print my Reals →** and it handles the rest.
+
+**CLI**
 
 ```bash
 # Full run — opens browser, screenshots feed, generates PDF
@@ -49,6 +67,9 @@ python main.py
 
 # Dry run — skips AI calls, uses dummy data (free, good for testing layout)
 python main.py --dry-run
+
+# Custom count
+python main.py --count 12
 ```
 
 On first run, a browser window will open. Log into Instagram normally, then press **Enter** in the terminal. Your session is saved locally so you won't need to log in again.
@@ -75,12 +96,14 @@ Make sure `session.json` and `screenshots/` are in your `.gitignore` — they're
 
 ```
 reals/
-├── main.py           # entrypoint, --dry-run flag
+├── app.py            # desktop GUI (PyQt5)
+├── main.py           # CLI entrypoint, --dry-run --count flags
 ├── scraper.py        # Playwright browser automation
 ├── ai_processor.py   # Claude vision API calls
 ├── pdf_builder.py    # PDF layout and export
+├── .env.example      # copy to .env and add your API key
 ├── requirements.txt
-└── .gitignore
+└── .gitignore        # includes .env, session.json, screenshots/
 ```
 
 ---
