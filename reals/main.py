@@ -3,7 +3,7 @@ from scraper import scrape_feed
 from ai_processor import process_screenshot
 from pdf_builder import build_pdf
 
-COUNT = 2  # keep low for hackathon demo speed
+COUNT = 4  # keep low for hackathon demo speed
 
 DRY_RUN = "--dry-run" in sys.argv   
 
@@ -22,7 +22,7 @@ if DRY_RUN:
     post_data = [DUMMY_DATA] * len(screenshots)
 else:
     print("Processing with AI...")
-    post_data = [process_screenshot(s) for s in screenshots]
+    post_data = [process_screenshot(s) for s, c in screenshots]
 
 
 print("Building PDF...")

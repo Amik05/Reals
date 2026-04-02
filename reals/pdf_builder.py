@@ -3,53 +3,59 @@ from PIL import Image
 
 def build_pdf(screenshots, post_data, output="reals.pdf"):
     pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_auto_page_break(auto=False, margin=15)
 
     for i, ((path, comments_path), data) in enumerate(zip(screenshots, post_data)):
-        pdf.add_page()
+        
+        # New page every 2 reels
+        if i % 2 == 0:
+            pdf.add_page()
+            # Header
+            pdf.set_font("Helvetica", "B", 20)
+            pdf.cell(0, 10, "Reals", ln=True, align="C")
+            pdf.set_draw_color(200, 200, 200)
+            pdf.line(10, 12, 200, 12)
 
-        # Header
-        pdf.set_font("Helvetica", "B", 20)
-        pdf.cell(0, 10, "Reals", ln=True, align="C")
-        pdf.set_draw_color(200, 200, 200)
-        pdf.line(10, 20, 200, 20)
-        pdf.ln(5)
+        # Top reel starts at y=20, bottom reel starts at y=155
+        y_start = 20 if i % 2 == 0 else 155
 
-        # Username
-        pdf.set_font("Helvetica", "B", 14)
-        pdf.cell(0, 8, f"@{data.get('username', 'unknown')}  [{data.get('type', 'post')}]", ln=True)
-        pdf.ln(2)
+        # Thumbnail left, comments right
+        thumb_x, thumb_w, thumb_h = 10, 90, 123
+        comments_x = thumb_x + thumb_w + 5
+        comments_w, comments_h = 45, 92
+        comments_y = y_start + (thumb_h - comments_h) / 2
 
-        # Image (604x830 → scale to fit page width)
         try:
-            pdf.image(path, x=15, w=90, h=123)  # scaled down proportionally
-            pdf.ln(5)
+            pdf.image(path, x=thumb_x, y=y_start, w=thumb_w, h=thumb_h)
         except:
-            pdf.ln(5)
+            pass
 
-        # Comments screenshot (298x610 → scale proportionally)
         if comments_path:
-            pdf.image(comments_path, x=15, w=45, h=92)
-            pdf.ln(5)
+            pdf.image(comments_path, x=comments_x, y=comments_y, w=comments_w, h=comments_h)
 
+        # Summary inline to the right of comments
+        summary_x = comments_x + comments_w + 5
+        summary_w = 200 - summary_x - 5  # remaining page width
 
-        # Summary
-        pdf.set_font("Helvetica", "I", 11)
-        pdf.set_text_color(80, 80, 80)
-        summary = data.get("summary", "")
-        pdf.multi_cell(0, 7, f"Summary: {summary}")
-        pdf.ln(2)
-
-        # Caption
-        pdf.set_font("Helvetica", "", 10)
+        pdf.set_xy(summary_x, y_start)
+        pdf.set_font("Helvetica", "B", 9)
         pdf.set_text_color(0, 0, 0)
-        caption = data.get("caption", "")
-        if caption:
-            pdf.multi_cell(0, 6, caption[:300])  # cap length
+        pdf.multi_cell(summary_w, 5, f"@{data.get('username', 'unknown')}")
 
-        # Divider
-        pdf.ln(3)
-        pdf.set_draw_color(220, 220, 220)
+        pdf.set_xy(summary_x, pdf.get_y())
+        pdf.set_font("Helvetica", "I", 8)
+        pdf.set_text_color(80, 80, 80)
+        pdf.multi_cell(summary_w, 4, data.get("summary", ""))
+
+        pdf.set_xy(summary_x, pdf.get_y() + 2)
+        pdf.set_font("Helvetica", "", 8)
+        pdf.set_text_color(120, 120, 120)
+        pdf.multi_cell(summary_w, 4, data.get("caption", "")[:150])
+
+        # Divider between the two reels
+        if i % 2 == 0:
+            pdf.set_draw_color(220, 220, 220)
+            pdf.line(10, 150, 200, 150)
 
     pdf.output(output)
     print(f"✅ PDF saved as {output}")
