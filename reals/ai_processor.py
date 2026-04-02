@@ -12,7 +12,7 @@ def process_screenshot(image_path):
     message = client.messages.create(
         model="claude-sonnet-4-20250514",
         system="Transcribe the image to a blind english user",
-        max_tokens=300,
+        max_tokens=600,
         messages=[{
             "role": "user",
             "content": [

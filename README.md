@@ -1,5 +1,7 @@
 # 📰 Reals
 
+![Reals](./book.jpg)
+
 > Print your Instagram Reels feed. Put down your phone. Read instead.
 
 Reals is a local Python tool that scrolls your Instagram Reels feed, screenshots each post, uses Claude AI to summarize video content, and generates a printable PDF — like a personal zine of your feed.
