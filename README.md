@@ -97,9 +97,6 @@ reals/
 ## Why
 
 The average person spends 2+ hours a day scrolling. Reals doesn't stop you from consuming your feed — it just moves it off your phone and onto paper.
-
-Built at a hackathon in 4 hours.
-
 ---
 
 MIT License
